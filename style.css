@@ -1,1 +1,318 @@
+/* ======== PODSTAWOWE USTAWIENIA ======== */
+:root {
+    --bg-dark: #121212;
+    --text-light: #F0F0F0;
+    --primary-blue: #007BFF;
+    --primary-purple: #8A2BE2;
+    --gradient: linear-gradient(90deg, var(--primary-blue), var(--primary-purple));
+    --container-width: 1200px;
+}
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+h1, h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+}
+
+h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px; }
+h2 { font-size: 2.5rem; text-align: center; margin-bottom: 60px; }
+p { margin-bottom: 20px; }
+section { padding: 100px 0; }
+
+/* ======== PRZYCISKI ======== */
+.btn {
+    display: inline-block;
+    padding: 15px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--gradient);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 123, 255, 0.3);
+}
+
+.btn-secondary {
+    border: 2px solid var(--primary-blue);
+    color: var(--text-light);
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+/* ======== NAGŁÓWEK I NAWIGACJA ======== */
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(18, 18, 18, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 20px 0;
+}
+
+.main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-light);
+    text-decoration: none;
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.main-nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: bold;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.main-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gradient);
+    transition: width 0.3s ease;
+}
+
+.main-nav a:hover::after {
+    width: 100%;
+}
+
+/* ======== SEKCJA HERO ======== */
+.hero {
+    padding-top: 200px;
+    padding-bottom: 100px;
+    text-align: center;
+}
+.hero-content {
+    max-width: 800px;
+}
+.hero-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.hero-visual {
+    margin-top: 80px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.keychain-placeholder { /* Placeholder animacji */
+    width: 150px;
+    height: 150px;
+    border-radius: 20px;
+    background: var(--gradient);
+    animation: rotate 10s linear infinite;
+}
+@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* ======== SEKCJA "JAK TO DZIAŁA" ======== */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    text-align: center;
+}
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    background: -webkit-linear-gradient(90deg, var(--primary-blue), var(--primary-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ======== SEKCJA LICZNIKI ======== */
+.counters-section {
+    background: rgba(255, 255, 255, 0.05);
+}
+.counters-section .container {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    flex-wrap: wrap;
+}
+.counter-item {
+    font-size: 3rem;
+    font-weight: bold;
+}
+.counter-item p {
+    font-size: 1rem;
+    font-weight: normal;
+}
+.infinity {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+/* ======== SEKCJA ZASTOSOWANIA ======== */
+.usage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+.usage-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    cursor: pointer;
+}
+.usage-card img {
+    width: 100%;
+    display: block;
+    transition: transform 0.4s ease;
+}
+.usage-card:hover img {
+    transform: scale(1.1);
+}
+.usage-card-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(18,18,18,1), rgba(18,18,18,0));
+}
+
+/* ======== SEKCJA REALIZACJE ======== */
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+.portfolio-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.portfolio-grid img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 123, 255, 0.2);
+}
+
+/* ======== SEKCJA KONTAKT ======== */
+.contact-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+.email-link {
+    font-size: 1.2rem;
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: bold;
+}
+.contact-form .form-group {
+    margin-bottom: 20px;
+}
+.contact-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
+/* ======== STOPKA ======== */
+.main-footer {
+    padding: 40px 0;
+    background: #0a0a0a;
+    text-align: center;
+}
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.footer-logo { font-size: 1.5rem; font-weight: bold; }
+.footer-nav a { color: #aaa; text-decoration: none; margin: 0 15px; }
+.footer-nav a:hover { color: var(--primary-blue); }
+.footer-copy { font-size: 0.9rem; color: #777; }
+
+/* ======== ANIMACJE PRZY PRZEWIJANIU ======== */
+.reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* ======== RESPONSYWNOŚĆ ======== */
+@media (max-width: 768px) {
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    
+    .main-nav { display: none; } /* Uproszczenie dla przykładu - w wersji pro trzeba by dodać menu mobilne (hamburger) */
+
+    .hero-buttons { flex-direction: column; }
+    
+    .contact-container { grid-template-columns: 1fr; }
+}
