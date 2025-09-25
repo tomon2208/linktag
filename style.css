@@ -337,33 +337,56 @@ section { padding: 100px 0; }
     line-height: 1;
 }
 
-/* ======== SEKCJA ZASTOSOWANIA ======== */
-.usage-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-}
-.usage-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: 15px;
-    cursor: pointer;
-}
-.usage-card img {
-    width: 100%;
-    display: block;
-    transition: transform 0.4s ease;
-}
-.usage-card:hover img {
-    transform: scale(1.1);
-}
-.usage-card-content {
+/* ======== SEKCJA TECHNOLOGIA ======== */
+.tech-section { position: relative; overflow: hidden; }
+.tech-section::before {
+    content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 20px;
-    background: linear-gradient(to top, rgba(18,18,18,1), rgba(18,18,18,0));
+    inset: -25%;
+    background:
+        radial-gradient(520px 520px at 20% 30%, rgba(0, 123, 255, 0.20), transparent 60%),
+        radial-gradient(600px 600px at 80% 40%, rgba(138, 43, 226, 0.20), transparent 60%),
+        radial-gradient(500px 500px at 50% 85%, rgba(0, 123, 255, 0.16), transparent 60%);
+    filter: blur(42px) saturate(120%);
+    z-index: -1;
+    pointer-events: none;
+    animation: techBlobs 24s ease-in-out infinite alternate;
+}
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin-bottom: 50px;
+}
+.step-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 22px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.step-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
+.step-number {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; color: white; background: var(--gradient); margin-bottom: 12px;
+}
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+}
+.info-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 22px;
+}
+
+@keyframes techBlobs {
+    0% { background-position: 20% 30%, 80% 40%, 50% 85%; }
+    50% { background-position: 24% 28%, 76% 42%, 48% 82%; }
+    100% { background-position: 18% 32%, 82% 38%, 52% 88%; }
 }
 
 /* ======== SEKCJA REALIZACJE ======== */
@@ -375,13 +398,60 @@ section { padding: 100px 0; }
 .portfolio-grid img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain; /* lepsze dla nieregularnych kształtów PNG */
     border-radius: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Wyraźniejszy stały cień dopasowany do kształtu (alfa PNG) */
+    filter: drop-shadow(0 16px 36px rgba(0,0,0,0.55)) drop-shadow(0 0 10px rgba(0,0,0,0.25));
+    transition: transform 0.3s ease, filter 0.3s ease;
 }
 .portfolio-grid img:hover {
     transform: scale(1.05);
-    box-shadow: 0 10px 30px rgba(0, 123, 255, 0.2);
+    /* Mocniejszy cień + delikatna niebieska poświata na hover */
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6)) drop-shadow(0 0 36px rgba(0, 123, 255, 0.28));
+}
+
+/* Tło z blobami dla sekcji Realizacje */
+.portfolio-section {
+    position: relative;
+    overflow: hidden;
+}
+.portfolio-section::before {
+    content: '';
+    position: absolute;
+    inset: -25%;
+    background:
+        radial-gradient(520px 520px at 20% 30%, rgba(0, 123, 255, 0.20), transparent 60%),
+        radial-gradient(600px 600px at 80% 40%, rgba(138, 43, 226, 0.20), transparent 60%),
+        radial-gradient(500px 500px at 50% 85%, rgba(0, 123, 255, 0.16), transparent 60%);
+    filter: blur(42px) saturate(120%);
+    z-index: -1;
+    pointer-events: none;
+    transform: translateZ(0);
+    animation: portfolioBlobs 26s ease-in-out infinite alternate;
+}
+
+@keyframes portfolioBlobs {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+        background-position:
+            20% 30%,
+            80% 40%,
+            50% 85%;
+    }
+    50% {
+        transform: translate3d(0, -1%, 0) scale(1.02);
+        background-position:
+            25% 28%,
+            75% 42%,
+            48% 82%;
+    }
+    100% {
+        transform: translate3d(0, 1%, 0) scale(0.99);
+        background-position:
+            18% 32%,
+            82% 38%,
+            52% 88%;
+    }
 }
 
 /* ======== SEKCJA KONTAKT ======== */
