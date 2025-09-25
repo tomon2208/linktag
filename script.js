@@ -90,4 +90,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // ======== BANNER: STRONA W BUDOWIE (pokaz jednorazowo na sesję) ========
+    try {
+        const banner = document.getElementById('siteBanner');
+        const closeBtn = document.getElementById('closeBanner');
+        const seenKey = 'lt_seen_banner_building_v1';
+        const shouldShow = sessionStorage.getItem(seenKey) !== '1';
+
+        if (banner && closeBtn && shouldShow) {
+            banner.hidden = false;
+            closeBtn.addEventListener('click', () => {
+                banner.hidden = true;
+                sessionStorage.setItem(seenKey, '1');
+            });
+        }
+    } catch (_) {
+        // bezpieczny fallback: nic nie robimy jeśli storage niedostępny
+    }
+
 });
