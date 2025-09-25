@@ -57,4 +57,37 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('scroll', revealOnScroll);
     revealOnScroll(); // Aby sprawdzić elementy widoczne na starcie
 
+    // ======== HERO: Fade-in i subtelny tilt ========
+    const heroImage = document.querySelector('.hero-image');
+    const heroWrap = document.querySelector('.hero-image-wrap');
+    if (heroImage && heroWrap) {
+        // pokaż obraz po załadowaniu
+        const imageOnLoad = () => heroImage.classList.add('is-visible');
+        if (heroImage.complete) {
+            imageOnLoad();
+        } else {
+            heroImage.addEventListener('load', imageOnLoad, { once: true });
+        }
+
+        // tilt na ruch myszy (desktop)
+        const maxTilt = 10; // stopnie
+        const onMouseMove = (e) => {
+            const rect = heroWrap.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width; // 0..1
+            const y = (e.clientY - rect.top) / rect.height; // 0..1
+            const rotateY = (x - 0.5) * (maxTilt * 2);
+            const rotateX = (0.5 - y) * (maxTilt * 2);
+            heroWrap.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        };
+        const resetTilt = () => {
+            heroWrap.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+        };
+
+        const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (!isTouch) {
+            heroWrap.addEventListener('mousemove', onMouseMove);
+            heroWrap.addEventListener('mouseleave', resetTilt);
+        }
+    }
+
 });

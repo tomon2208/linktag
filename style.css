@@ -132,6 +132,8 @@ section { padding: 100px 0; }
     padding-top: 200px;
     padding-bottom: 100px;
     text-align: center;
+	position: relative; /* dla tła pseudo-elementu */
+	overflow: hidden;
 }
 .hero-content {
     max-width: 800px;
@@ -149,14 +151,131 @@ section { padding: 100px 0; }
     justify-content: center;
     align-items: center;
 }
-.keychain-placeholder { /* Placeholder animacji */
-    width: 150px;
-    height: 150px;
-    border-radius: 20px;
-    background: var(--gradient);
-    animation: rotate 10s linear infinite;
+
+/* Obraz breloka w hero */
+.hero-image-wrap {
+	position: relative;
+	width: min(55vw, 420px);
+	max-width: 100%;
+	aspect-ratio: 1/1;
+	transform-style: preserve-3d;
+	transition: transform 0.3s ease;
 }
-@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.hero-image-wrap::after {
+	content: '';
+	position: absolute;
+	top: 10%;
+	left: 10%;
+	right: 10%;
+	bottom: 10%;
+	background: radial-gradient(closest-side, rgba(0,123,255,0.25), transparent 70%);
+	filter: blur(30px);
+	z-index: -1;
+}
+.hero-image {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	display: block;
+	filter: drop-shadow(0 20px 40px rgba(0,0,0,0.45)) drop-shadow(0 0 30px rgba(0, 123, 255, 0.25));
+	animation: floatUpDown 6s ease-in-out infinite;
+	opacity: 0;
+	transform: translateY(10px) scale(0.98);
+}
+
+@keyframes floatUpDown {
+	0% { transform: translateY(10px) scale(0.98); }
+	50% { transform: translateY(-10px) scale(1); }
+	100% { transform: translateY(10px) scale(0.98); }
+}
+
+/* Fade-in wejścia po załadowaniu */
+.hero-image.is-visible {
+	opacity: 1;
+	transition: opacity 800ms ease, transform 800ms ease;
+	transform: translateY(0) scale(1);
+}
+
+/* ======== DYNAMICZNE TŁO HERO (CSS only) ======== */
+.hero::before {
+	content: '';
+	position: absolute;
+	inset: -20%;
+	background:
+		radial-gradient(600px 600px at 20% 20%, rgba(0, 123, 255, 0.25), transparent 60%),
+		radial-gradient(500px 500px at 80% 30%, rgba(138, 43, 226, 0.25), transparent 60%),
+		radial-gradient(500px 500px at 50% 80%, rgba(0, 123, 255, 0.18), transparent 60%);
+	filter: blur(40px) saturate(120%);
+	z-index: -1;
+	pointer-events: none;
+	transform: translateZ(0);
+	animation: heroBlobs 22s ease-in-out infinite alternate;
+}
+
+/* Obraz breloka w tle hero */
+.hero::after {
+	content: '';
+	position: absolute;
+	width: min(32vw, 420px);
+	height: min(32vw, 420px);
+	right: max(5vw, 80px);
+	top: 70px;
+	background-image: url('brelok-wizualizacja.png');
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	opacity: 0.12;
+	filter: drop-shadow(0 20px 40px rgba(0,0,0,0.35));
+	animation: heroBadgeFloat 10s ease-in-out infinite;
+	pointer-events: none;
+	z-index: -1;
+}
+
+@keyframes heroBadgeFloat {
+	0% { transform: translate3d(0, 0, 0) rotate(-6deg); }
+	50% { transform: translate3d(0, -8px, 0) rotate(-4deg); }
+	100% { transform: translate3d(0, 0, 0) rotate(-6deg); }
+}
+
+@media (max-width: 768px) {
+	.hero::after {
+		width: 56vw;
+		height: 56vw;
+		right: -10vw;
+		top: 60px;
+		opacity: 0.16;
+	}
+}
+
+@keyframes heroBlobs {
+	0% {
+		transform: translate3d(0, 0, 0) scale(1);
+		background-position:
+			20% 20%,
+			80% 30%,
+			50% 80%;
+	}
+	50% {
+		transform: translate3d(0, -1%, 0) scale(1.02);
+		background-position:
+			25% 15%,
+			75% 35%,
+			48% 82%;
+	}
+	100% {
+		transform: translate3d(0, 1%, 0) scale(0.99);
+		background-position:
+			18% 22%,
+			82% 28%,
+			52% 78%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.hero::before {
+		animation: none;
+	}
+}
 
 /* ======== SEKCJA "JAK TO DZIAŁA" ======== */
 .features-grid {
@@ -164,11 +283,33 @@ section { padding: 100px 0; }
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 40px;
     text-align: center;
+	max-width: 900px;
+	margin: 0 auto;
+}
+.feature-section .container { position: relative; }
+.feature-visual {
+	position: absolute;
+	right: calc(-1 * max(0px, ((100vw - var(--container-width)) / 2) - 140px));
+	top: calc(50% - 100px);
+	transform: translateY(-50%);
+	pointer-events: none;
+	background: none;
+	border: 0;
+	box-shadow: none;
+}
+.feature-visual img {
+	width: auto;
+	max-width: min(28vw, 320px);
+	display: block;
+	height: auto;
+	object-fit: contain;
+	filter: drop-shadow(0 10px 24px rgba(0,0,0,0.35));
 }
 .feature-icon {
     font-size: 3rem;
     margin-bottom: 20px;
     background: -webkit-linear-gradient(90deg, var(--primary-blue), var(--primary-purple));
+	background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -316,3 +457,12 @@ section { padding: 100px 0; }
     
     .contact-container { grid-template-columns: 1fr; }
 }
+
+/* Jeden rząd kroków na większych ekranach */
+@media (min-width: 992px) {
+	.features-grid {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+/* usuwamy stylowanie feature-visual (obraz przeniesiony do hero) */
