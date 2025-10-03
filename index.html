@@ -16,6 +16,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_RECAPTCHA_V3_SITE_KEY" async defer></script>
+    <link rel="preload" as="image" href="brelok.png" />
 </head>
 <body>
 
@@ -51,7 +53,7 @@
             </div>
             <div class="hero-visual">
                 <div class="hero-image-wrap">
-                    <img src="brelok.png" alt="Brelok NFC z druku 3D – LinkTag" class="hero-image">
+                    <img src="brelok.png" alt="Brelok NFC z druku 3D – LinkTag" class="hero-image" decoding="async" fetchpriority="high">
                 </div>
             </div>
         </section>
@@ -163,10 +165,10 @@
             <div class="container">
                 <h2 class="reveal">Nasze realizacje – breloki NFC z druku 3D</h2>
                 <div class="portfolio-grid">
-                    <img src="realizacja-1.png" alt="Brelok NFC – realizacja 1, druk 3D, personalizacja" class="reveal">
-                    <img src="realizacja-2.png" alt="Brelok NFC – realizacja 2, tag NFC, personalizowany projekt" class="reveal">
-                    <img src="realizacja-3.png" alt="Brelok NFC – realizacja 3, druk 3D, tag NFC" class="reveal">
-                    <img src="realizacja-4.png" alt="Brelok NFC – realizacja 4, personalizowany brelok z NFC" class="reveal">
+                    <img src="realizacja-1.png" alt="Brelok NFC – realizacja 1, druk 3D, personalizacja" class="reveal" loading="lazy" decoding="async">
+                    <img src="realizacja-2.png" alt="Brelok NFC – realizacja 2, tag NFC, personalizowany projekt" class="reveal" loading="lazy" decoding="async">
+                    <img src="realizacja-3.png" alt="Brelok NFC – realizacja 3, druk 3D, tag NFC" class="reveal" loading="lazy" decoding="async">
+                    <img src="realizacja-4.png" alt="Brelok NFC – realizacja 4, personalizowany brelok z NFC" class="reveal" loading="lazy" decoding="async">
                 </div>
             </div>
         </section>
@@ -178,7 +180,8 @@
                     <p>Wypełnij formularz lub napisz do nas bezpośrednio. Z przyjemnością przygotujemy dla Ciebie darmową wycenę i odpowiemy na wszystkie pytania.</p>
                     <a href="mailto:kontakt@linktag.pl" class="email-link">kontakt@linktag.pl</a>
                 </div>
-                <form class="contact-form reveal">
+                <form id="contactForm" class="contact-form reveal" data-endpoint="https://formspree.io/f/meorknwp" data-recaptcha-sitekey="YOUR_RECAPTCHA_V3_SITE_KEY">
+                    <input type="text" id="company" name="company" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;" />
                     <div class="form-group">
                         <label for="name">Imię i Nazwisko</label>
                         <input type="text" id="name" name="name" required>
@@ -191,7 +194,8 @@
                         <label for="message">Wiadomość</label>
                         <textarea id="message" name="message" rows="5" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Wyślij Wiadomość</button>
+                    <button type="submit" class="btn btn-primary" id="contactSubmit">Wyślij Wiadomość</button>
+                    <div id="formStatus" role="status" aria-live="polite" style="margin-top:12px;"></div>
                 </form>
             </div>
         </section>
@@ -210,6 +214,6 @@
             </div>
         </div>
     </footer>
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>

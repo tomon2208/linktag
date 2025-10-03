@@ -108,4 +108,125 @@ document.addEventListener('DOMContentLoaded', function() {
         // bezpieczny fallback: nic nie robimy jeśli storage niedostępny
     }
 
+    // ======== FORMULARZ KONTAKTOWY: wysyłka + walidacja + status ========
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        const statusEl = document.getElementById('formStatus');
+        const submitBtn = document.getElementById('contactSubmit');
+        const endpoint = contactForm.getAttribute('data-endpoint'); // np. https://formspree.io/f/xxxx
+        const recaptchaSiteKey = contactForm.getAttribute('data-recaptcha-sitekey');
+
+        const setStatus = (message, type = 'info') => {
+            if (!statusEl) return;
+            statusEl.textContent = message;
+            statusEl.className = '';
+            statusEl.classList.add(`status-${type}`);
+        };
+
+        const setSubmitting = (isSubmitting) => {
+            if (submitBtn) {
+                submitBtn.disabled = isSubmitting;
+                submitBtn.textContent = isSubmitting ? 'Wysyłanie…' : 'Wyślij Wiadomość';
+            }
+        };
+
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // honeypot
+            const honey = contactForm.querySelector('#company');
+            if (honey && honey.value.trim() !== '') {
+                setStatus('Błąd wysyłki. Spróbuj ponownie później.', 'error');
+                return;
+            }
+
+            const name = contactForm.name?.value?.trim();
+            const email = contactForm.email?.value?.trim();
+            const message = contactForm.message?.value?.trim();
+
+            if (!name || !email || !message) {
+                setStatus('Uzupełnij wszystkie pola.', 'error');
+                return;
+            }
+
+            // reCAPTCHA v3: pobierz token przed wysyłką (jeśli skonfigurowano site key)
+            let recaptchaToken = '';
+            if (recaptchaSiteKey && typeof grecaptcha !== 'undefined' && grecaptcha.execute) {
+                try {
+                    await grecaptcha.ready?.();
+                    recaptchaToken = await grecaptcha.execute(recaptchaSiteKey, { action: 'submit' });
+                } catch (_) {
+                    // brak tokenu, spróbujemy wysłać i pozwolić backendowi zdecydować
+                }
+            }
+
+            setSubmitting(true);
+            setStatus('Wysyłam…', 'info');
+
+            // Try API endpoint first (if configured)
+            if (endpoint) {
+                try {
+                    const formData = new FormData(contactForm);
+                    // usuń honeypot z payloadu
+                    formData.delete('company');
+                    // zbuduj payload jako FormData (wymagane przez Formspree)
+                    const resp = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json' },
+                        body: (() => {
+                            if (recaptchaToken) {
+                                formData.set('g-recaptcha-response', recaptchaToken);
+                            }
+                            return formData;
+                        })()
+                    });
+                    if (resp.ok) {
+                        setStatus('Dziękujemy! Wiadomość została wysłana.', 'success');
+                        contactForm.reset();
+                        setSubmitting(false);
+                        return;
+                    } else {
+                        // pokaż błąd z Formspree (bez fallbacku do mailto przy odpowiedzi HTTP)
+                        try {
+                            const data = await resp.json();
+                            const err = data?.errors?.[0]?.message || 'Błąd wysyłki. Spróbuj ponownie.';
+                            setStatus(err, 'error');
+                        } catch (_) {
+                            setStatus('Błąd wysyłki. Spróbuj ponownie.', 'error');
+                        }
+                        setSubmitting(false);
+                        return;
+                    }
+                } catch (_) {
+                    // Fallback: mailto tylko przy błędzie sieciowym
+                    try {
+                        const subject = encodeURIComponent(`Wiadomość ze strony LinkTag od: ${name}`);
+                        const body = encodeURIComponent(`Imię i nazwisko: ${name}\nEmail: ${email}\n\nWiadomość:\n${message}`);
+                        const mailto = `mailto:kontakt@linktag.pl?subject=${subject}&body=${body}`;
+                        window.location.href = mailto;
+                        setStatus('Otworzono klienta poczty. Jeśli nie działa, napisz na kontakt@linktag.pl', 'info');
+                    } catch (_) {
+                        setStatus('Nie udało się wysłać wiadomości. Użyj adresu: kontakt@linktag.pl', 'error');
+                    } finally {
+                        setSubmitting(false);
+                    }
+                    return;
+                }
+            }
+
+            // Brak endpointu: użyj mailto
+            try {
+                const subject = encodeURIComponent(`Wiadomość ze strony LinkTag od: ${name}`);
+                const body = encodeURIComponent(`Imię i nazwisko: ${name}\nEmail: ${email}\n\nWiadomość:\n${message}`);
+                const mailto = `mailto:kontakt@linktag.pl?subject=${subject}&body=${body}`;
+                window.location.href = mailto;
+                setStatus('Otworzono klienta poczty. Jeśli nie działa, napisz na kontakt@linktag.pl', 'info');
+            } catch (_) {
+                setStatus('Nie udało się wysłać wiadomości. Użyj adresu: kontakt@linktag.pl', 'error');
+            } finally {
+                setSubmitting(false);
+            }
+        });
+    }
+
 });
